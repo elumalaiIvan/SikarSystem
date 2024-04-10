@@ -38,9 +38,6 @@ create_plain_java_project() {
 
     mkdir -p "$appDirectory/src/main/java/com/sikar"
     touch "$appDirectory/src/main/java/com/sikar/Main.java"
-    touch "$appDirectory/pom.sikarXml"
-
-
     # You can create more files/directories as needed
 }
 
@@ -52,11 +49,10 @@ create_sikar_boot_project() {
     echo "Creating Sikar Boot project structure for $appName..."
 
     mkdir -p "$appDirectory/src/main/java/com/sikar"
-    mkdir -p "$appDirectory/src/main/resources/application.sikarProperties"
+    mkdir -p "$appDirectory/src/main/resources"
     cp "$main_script_dir"/template/SikarBootApplication.java "$appDirectory/src/main/java/com/sikar"
     cp "$main_script_dir"/template/pom.sikar "$appDirectory"
+    cp "$main_script_dir"/template/sikarApplication.properties "$appDirectory/src/main/resources"
 
-#    sed -i 's/{project_name}/'"$appName"'/g' "$appDirectory/pom.sikar"
-
-    # You can create more files/directories as needed
+    sed -i '' -e "s/{project_name}/$appName/g" "$appDirectory"/pom.sikar
 }
