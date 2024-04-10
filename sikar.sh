@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Get the directory of the main script
-main_script_dir="$(dirname "$(readlink -f "$0")")"
+SIKAR_SYSTEM_DIR="$(dirname "$(readlink -f "$0")")"
 # imports external scripts
-source "$main_script_dir/create.sh"
-source "$main_script_dir/sMvnSettings.sh"
+source "$SIKAR_SYSTEM_DIR/create.sh"
+source "$SIKAR_SYSTEM_DIR/sMvnSettings.sh"
 
 
 # Entry point
