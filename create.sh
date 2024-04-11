@@ -6,8 +6,6 @@
 # Load configuration from application.properties
 #source "$current_dir/pom.sikarXml"
 
-APP_DIR=""
-
 create() {
     echo "Enter the project name:"
     read appName
@@ -29,24 +27,29 @@ create() {
             exit 1
             ;;
     esac
-    APP_DIR="$(pwd)/$appName"
-    mkdir -p "$APP_DIR"
+
 }
 
 # Function to create a plain Java project structure
 create_plain_java_project() {
     local appName=$1
+    local appDir="$(pwd)/$appName"
+    mkdir -p "$appDir"
+
     echo "Creating Plain Java project structure for $appName..."
 
-    cp -R "$SIKAR_SYSTEM_DIR"/templates/javaApplication/* "$APP_DIR"
+    cp -R "$SIKAR_SYSTEM_DIR"/templates/javaApplication/* "$appDir"
 }
 
 # Function to create a Sikar Boot project structure
 create_sikar_boot_project() {
     local appName=$1
-    echo "Creating Sikar Boot project structure for $appName..."
+    local appDir="$(pwd)/$appName"
+    mkdir -p "$appDir"
 
-    cp -R "$SIKAR_SYSTEM_DIR"/templates/sikarBootApplication/* "$APP_DIR"
+    echo "Creating Sikar Boot project structure for $appName... $SIKAR_SYSTEM_DIR and $appDir"
 
-    sed -i '' -e "s/{project_name}/$appName/g" "$APP_DIR"/pom.sikar
+    cp -R "$SIKAR_SYSTEM_DIR"/template/sikarBootApplication/* "$appDir"
+
+    sed -i '' -e "s/{project_name}/$appName/g" "$appDir"/pom.sikar
 }
