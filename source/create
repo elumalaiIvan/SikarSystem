@@ -6,6 +6,9 @@
 # Load configuration from application.properties
 #source "$current_dir/pom.sikarXml"
 
+#include github repo creation as well
+# parse the arguments and use it if provided
+
 create() {
     echo "Enter the project name:"
     read appName
@@ -53,3 +56,5 @@ create_sikar_boot_project() {
 
     sed -i '' -e "s/{project_name}/$appName/g" "$appDir"/pom.sikar.sh
 }
+
+create "$@"
