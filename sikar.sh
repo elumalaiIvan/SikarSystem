@@ -3,19 +3,32 @@
 # Get the directory of the main script
 SIKAR_SYSTEM_DIR="$(dirname "$(readlink -f "$0")")"
 # imports external scripts
-source "$SIKAR_SYSTEM_DIR/create.sh"
-source "$SIKAR_SYSTEM_DIR/sMvnSettings.sh"
+# Source all files from the source folder
+#for file in $SIKAR_SYSTEM_DIR/source/*; do
+#    if [ -f "$file" ]; then
+#        source "$file"
+#    fi
+#done
+source "$SIKAR_SYSTEM_DIR/constants"
+
 
 
 # Entry point
 main() {
-    for function_name in "$@"; do
-        if declare -f "$function_name" > /dev/null; then
-            "$function_name" "$@"
-        else
-            echo "Function '$function_name' does not exist"
-        fi
-    done
+  if [ $# -eq 0 ]; then
+    echo -e "$RED pass any one of the bellow operation as argument $NC"
+    listFunctions
+  else
+    local function_name="$1"
+    local function_path="$SIKAR_SYSTEM_DIR"/source/"$function_name"
+    if [ -f "$function_path" ]; then
+      shift
+      source "$function_path" "$@"
+    else
+      echo "operation '$function_name' does not exist"
+      echo "try${GREEN} sikar help $NC"
+    fi
+  fi
 }
 
 main "$@"

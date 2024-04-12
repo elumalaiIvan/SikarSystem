@@ -47,9 +47,9 @@ create_sikar_boot_project() {
     local appDir="$(pwd)/$appName"
     mkdir -p "$appDir"
 
-    echo "Creating Sikar Boot project structure for $appName... $SIKAR_SYSTEM_DIR and $appDir"
+    echo "Creating Sikar Boot project structure for $appName... in $SIKAR_SYSTEM_DIR"
 
-    cp -R "$SIKAR_SYSTEM_DIR"/template/sikarBootApplication/* "$appDir"
+    cp -R "$SIKAR_SYSTEM_DIR"/templates/sikarBootApplication/* "$appDir"
 
-    sed -i '' -e "s/{project_name}/$appName/g" "$appDir"/pom.sikar
+    sed -i '' -e "s/{project_name}/$appName/g" "$appDir"/pom.sikar.sh
 }

@@ -1,0 +1,42 @@
+#!/bin/bash
+
+SIKAR_DIR="$HOME/Workspace/Sikar"
+
+# Function to list projects in the specified category directory
+list_projects() {
+    local category="$1"
+    local category_dir="$SIKAR_DIR/$category"
+
+    if [ -d "$category_dir" ]; then
+        echo -e "$GREEN $category : $NC"
+        for project_dir in "$category_dir"/*/; do
+            echo "- $(basename "$project_dir")"
+        done
+    else
+        echo "Error: '$category' category directory not found."
+    fi
+}
+
+# Function to list projects in all categories
+list_all_projects() {
+    echo "Listing projects in all categories from: $SIKAR_DIR"
+    for category_dir in "$SIKAR_DIR"/*/; do
+        local category="$(basename "$category_dir")"
+        list_projects "$category"
+        echo "------------"  # Add a blank line between categories
+    done
+}
+
+list() {
+    if [ $# -eq 0 ]; then
+        list_all_projects
+    else
+      # for readability
+        local category="$1"
+        list_projects "$category"
+    fi
+}
+
+list "$@"
+
+# Run main function with command-line arguments
