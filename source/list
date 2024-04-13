@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SIKAR_DIR="$HOME/Workspace/Sikar"
-
 # Function to list projects in the specified category directory
 list_projects() {
     local category="$1"

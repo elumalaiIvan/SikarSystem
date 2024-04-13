@@ -1,0 +1,92 @@
+#!/bin/bash
+
+source "$SIKAR_SYSTEM_DIR/ignore/gitCredentials"
+
+delete() {
+  delete_local=false
+  delete_remote=false
+
+  # Parse options
+  while getopts ":lr" opt; do
+    case ${opt} in
+      l )
+        delete_local=true
+        ;;
+      r )
+        delete_remote=true
+        ;;
+      \? )
+        echo "Invalid option: -$OPTARG" 1>&2
+        exit 1
+        ;;
+      : )
+        echo "Option -$OPTARG requires an argument" 1>&2
+        exit 1
+        ;;
+    esac
+  done
+  shift $((OPTIND -1))
+
+  # Check if --name argument is provided
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --name=* )
+        repo_name="${1#*=}"
+        shift
+        ;;
+      --name )
+        shift
+        repo_name="$1"
+        shift
+        ;;
+      *)
+        repo_name="$1"
+        shift
+        ;;
+    esac
+  done
+
+  if [[ -z "$repo_name" ]]; then
+     read -rp "Enter project name to be deleted: " repo_name
+  fi
+
+  # Check if either -l or -r or both were provided
+  if ! $delete_local && ! $delete_remote; then
+    echo "Please specify at least one of the options -l or -r" 1>&2
+    exit 1
+  fi
+
+  if $delete_local; then
+    echo "deleting from local..."
+    delete_project_repo_from_local "$repo_name"
+  fi
+
+  if $delete_remote; then
+    echo "deleting from remote..."
+    delete_project_repo_from_remote "$repo_name"
+  fi
+}
+
+# Function to create a new repository on GitHub
+delete_project_repo_from_local() {
+    local repo_name="$1"
+    find "$SIKAR_DIR" -type d -name "$repo_name" -exec rm -rf {} +
+    echo "deleted from local"
+}
+
+delete_project_repo_from_remote() {
+    local repo_name="$1"
+
+    read -p "Are you sure you want to delete this repository from remote? (y/n): " confirm
+      if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
+        curl -X DELETE \
+                 -H "Authorization: token $GITHUB_TOKEN" \
+                 "https://api.github.com/repos/$GITHUB_USERNAME/$repo_name"
+        echo "deleted from remote"
+      else
+        echo "Operation aborted."
+        exit 0
+    fi
+}
+
+delete "$@"

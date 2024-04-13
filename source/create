@@ -8,29 +8,110 @@
 
 #include github repo creation as well
 # parse the arguments and use it if provided
+source "$SIKAR_SYSTEM_DIR/ignore/gitCredentials"
 
 create() {
-    echo "Enter the project name:"
-    read appName
+    local name=""
+    local type=""
+    local description=""
+    local is_git_project=false
 
-    echo "Select project type:"
-    echo "1. Plain Java"
-    echo "2. Sikar Boot"
-    read -p "Enter your choice [1 or 2]: " type
+    # Parse command-line options
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --name=*)
+                name="${1#*=}"
+                ;;
+            --type=*)
+                type="${1#*=}"
+                ;;
+            --description=*)
+                description="${1#*=}"
+                ;;
+            --git)
+                is_git_project=true
+                ;;
+            *)
+                echo "Invalid option: $1"
+                exit 1
+                ;;
+        esac
+        echo "before shift"
+        echo "$@"
+        shift
+        echo "after shift"
+        echo "$@"
+    done
+
+    # Check if type is missing
+    if [[ -z "$name" ]]; then
+        # Prompt user to provide type
+        read -rp "Enter project name: " name
+    fi
+    if [[ -z "$type" ]]; then
+        # Prompt user to provide type
+        echo -e "possible types are:"
+#        for dir in $SIKAR_SYSTEM_DIR/templates/*; do
+#            echo "$(basename dir)"
+#        done
+        echo "java"
+        echo "boot"
+
+        read -rp "Enter project type: " type
+    fi
+    if [[ -z "$description" ]]; then
+        # Prompt user to provide type
+        read -rp "Enter project description: " description
+    fi
 
     case $type in
-        1)
-            create_plain_java_project "$appName"
-            ;;
-        2)
-            create_sikar_boot_project "$appName"
-            ;;
-        *)
-            echo "Invalid choice"
-            exit 1
-            ;;
+      javaApplication|java)
+          create_plain_java_project "$name" "$description"
+          ;;
+      sikarBootApplication|boot)
+          create_sikar_boot_project "$name" "$description"
+          ;;
+      *)
+          echo "Invalid choice"
+          exit 1
+          ;;
     esac
+    
+    # If it's a Git project, create GitHub repo and push to GitHub
+    if $is_git_project; then
+        create_github_repo "$name" "$description"
+        push_to_github "$name"
+    fi
+}
 
+# Function to create a new repository on GitHub
+create_github_repo() {
+    local repo_name="$1"
+    local description="$2"
+
+    # Create a new repository via GitHub API
+    curl -X POST \
+         -H "Authorization: token $GITHUB_TOKEN" \
+         -d '{"name": "'"$repo_name"'", "description": "'"$description"'"}' \
+         "https://api.github.com/user/repos"
+}
+
+# Function to push local project to GitHub
+push_to_github() {
+    local repo_name="$1"
+    pushd "$(pwd)/$appName"
+    # Initialize a git repository if not already initialized
+    if [[ ! -d .git ]]; then
+        git init
+        git add .
+        git commit -m "Initial commit"
+    fi
+
+    # Add GitHub repository as remote origin
+    git remote add origin "git@github.com:$GITHUB_USERNAME/$repo_name.git"
+    # Push code to GitHub
+    git push -u origin main
+    popd
 }
 
 # Function to create a plain Java project structure

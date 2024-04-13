@@ -1,3 +1,4 @@
 GREEN='\033[0;32m'
 RED='\033[0;32m'
 NC='\033[0m'
+SIKAR_DIR="$HOME/Workspace/Sikar"
