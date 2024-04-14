@@ -1,4 +1,9 @@
+#!/bin/bash
+
 GREEN='\033[0;32m'
 RED='\033[0;32m'
 NC='\033[0m'
 SIKAR_DIR="$HOME/Workspace/Sikar"
+CURRENT_DIR="$(pwd)"
+SIKAR_SYSTEM_DIR="$(dirname "$(readlink -f "$0")")"
+SIKAR_SOURCE_DIR="$SIKAR_SYSTEM_DIR/source"

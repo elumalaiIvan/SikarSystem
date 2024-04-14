@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Get the directory of the main script
-SIKAR_SYSTEM_DIR="$(dirname "$(readlink -f "$0")")"
 # imports external scripts
 # Source all files from the source folder
 #for file in $SIKAR_SYSTEM_DIR/source/*; do
@@ -9,9 +8,8 @@ SIKAR_SYSTEM_DIR="$(dirname "$(readlink -f "$0")")"
 #        source "$file"
 #    fi
 #done
+SIKAR_SYSTEM_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SIKAR_SYSTEM_DIR/constants"
-
-
 
 # Entry point
 main() {
@@ -20,7 +18,7 @@ main() {
     listFunctions
   else
     local function_name="$1"
-    local function_path="$SIKAR_SYSTEM_DIR"/source/"$function_name"
+    local function_path="$SIKAR_SOURCE_DIR/$function_name"
     if [ -f "$function_path" ]; then
       shift
       source "$function_path" "$@"
