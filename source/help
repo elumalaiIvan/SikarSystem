@@ -1,0 +1,10 @@
+#!/bin/bash
+
+listFunctions() {
+  for file in "$SIKAR_SYSTEM_DIR"/source/*; do
+    echo "$(basename "$file")"
+  done
+}
+echo -e "use sikar CLI like this \n $GREEN sikar <operation> $NC"
+echo "possible operations are: "
+listFunctions
