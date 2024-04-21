@@ -1,29 +1,36 @@
 #!/bin/bash
 
-# Specify the path to your IntelliJ IDEA installation
-INTELLIJ_BIN="/Applications/IntelliJ IDEA.app/Contents/MacOS/idea"
-
-# Check if IntelliJ IDEA is installed
-if [ ! -f "$INTELLIJ_BIN" ]; then
-    echo "IntelliJ IDEA is not installed in the default location."
-    exit 1
-fi
-
 # Check if a project directory is provided as an argument
 if [ $# -eq 0 ]; then
     echo "Usage: $0 <project_directory>"
     exit 1
 fi
 
-# Get the absolute path of the project directory
-PROJECT_DIR=$(cd "$1" && pwd)
+#enhance in future with multiple IDEs support
+ide="IntelliJ IDEA CE"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --project=*)
+      project="${1#*=}"
+      ;;
+    --ide=*)
+      ide="${1#*=}"
+      ;;
+    *)
+      echo "Invalid option: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
 
 # Check if the project directory exists
-if [ ! -d "$PROJECT_DIR" ]; then
-    echo "Project directory '$PROJECT_DIR' does not exist."
+if [ ! -d "$project" ]; then
+    echo "Project directory '$project' does not exist."
     exit 1
 fi
 
 # Open the project in IntelliJ IDEA
 echo "Opening project in IntelliJ IDEA..."
-"$INTELLIJ_BIN" "$PROJECT_DIR"
+open -a "$ide" "$project"
