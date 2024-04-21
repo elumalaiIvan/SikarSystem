@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Exit immediately if any command exits with a non-zero status
+set -e
+
+handle_error() {
+    echo "Error occurred in line $1: $2"
+    exit 1
+}
+
+# Trap the ERR signal and call the custom error-handling function
+trap 'handle_error $LINENO "$BASH_COMMAND"' ERR
+
 # Get the directory of the main script
 # imports external scripts
 # Source all files from the source folder
