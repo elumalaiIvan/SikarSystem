@@ -21,7 +21,7 @@ BG_CYAN='\033[46m'
 BG_WHITE='\033[47m'
 
 r_echo() {
-  echo -e "${RED}$1${RESET}"
+  echo -e "${RED}$1${NC}"
 }
 g_echo() {
   echo -e "${GREEN}$1${NC}"
@@ -30,5 +30,5 @@ y_echo() {
   echo -e "${YELLOW}$1${NC}"
 }
 c_echo() {
-  echo -e "${CYAN}$1${RESET}"
+  echo -e "${CYAN}$1${NC}"
 }
